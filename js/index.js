@@ -1,12 +1,14 @@
-
-function getYear(){} // 得到年份
-var years = ['2017', '2018']
-
-var bookshelfPaddingRadio = [2/15, 1/25, 3/10, 1/25] // top right bottom left
-
-
 // App类
-function App() {}
+function App() {
+  this.years = []
+  this.obsY = []
+  var year = new Year()
+  var month = new Month()
+  var week = new Week()
+  month.weeks.push(week)
+  year.months.push(month)
+  this.years.push(year)
+}
 App.prototype.getBoxModel = function(model) {
   this.width = parseInt( $(model).css('width') )
   this.height = parseInt( $(model).css('height') )
@@ -24,6 +26,93 @@ App.prototype.getBoxModel = function(model) {
   ]
 }
 var app = new App()
+
+// data构造函数
+function handleData(datas) {
+
+  var obsY = app.obsY
+  var years = app.years
+
+  datas.forEach(function(data) {
+    var date = data.mDate.split('-')
+    var year = data[0]
+    var month = data[1]
+    var days = getDaysFromTheMonth( year, month )
+    var day = parseInt(data[2], 0)
+    var week = Math.round( day / Math.floor(month/4) ) === 5 ? 4 : Math.round( day / Math.floor(month/4) )
+
+    if( obsY.indexOf(year) === -1 ) { // 添加新的年份
+
+      years.push(new Year(year))
+      obsY.push(year)
+
+      obsY.sort(function(x, y) {
+        var xI = obsY.indexOf(x)
+        var yI = obsY.indexOf(y)
+
+        if(x > y) {
+            var t = new Object(years[xI])
+            years[xI] = years[yI]
+            years[yI] = t
+        }
+
+        return x > y
+      })
+
+    }else {
+
+      var nYear = years.indexOf(year)
+      var iYear = years[nYear]
+      var months = iYear.months
+
+      if(iYear.indexOf(month) ) {}
+
+    }
+  })
+
+}
+
+console.log(app)
+
+// 获取给定月份的天数
+function getDaysFromTheMonth(year, month){
+  var month = parseInt(month, 10)
+  var d = new Date(year, month, 0)
+  return d.getDate()
+}
+
+
+// 年的构造函数
+function Year(year) {
+  this.year = year
+  this.months = []
+  this.obsM = []
+}
+
+// 月的构造函数
+function Month(month) {
+  this.month = month
+  this.weeks = []
+  this.obsM = []
+}
+
+// 周的构造函数
+function Week(week){
+  this.week = week
+  this.tags = []
+  this.obsT = []
+}
+
+// 时间的构造函数
+function Tag(name, time) {
+  this.name = name
+  this.time = time
+}
+
+
+var years = ['2017', '2018']
+
+var bookshelfPaddingRadio = [2/15, 1/25, 3/10, 1/25] // top right bottom left
 
 
 // wall类
