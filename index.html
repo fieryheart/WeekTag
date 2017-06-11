@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>weektag-bookcase</title>
+  <link rel="stylesheet" href="./styles/animate.css">
+  <link rel="stylesheet" href="./styles/style.css">
+  <link rel="stylesheet" href="./styles/swiper-3.4.2.min.css">
+  <script type="text/javascript" src="./js/zepto.min.js"></script>
+  <script type="text/javascript" src="./js/pixi.min.js"></script>
+  <script type="text/javascript" src="./js/swiper-3.4.2.jquery.min.js"></script>
+</head>
+<body>
+
+  <div id="wall"></div>
+  <div id="bookcase">
+    <div class="swiper-container swiper-container-verticals">
+      <div class="swiper-wrapper" data-bookcase=""></div>
+    </div>
+  </div>
+
+  <div id="content">
+
+  </div>
+  <script type="text/javascript" src="./js/books.js"></script>
+  <script type="text/javascript" src="./js/index.js"></script>
+  <script>
+  var mySwiper = new Swiper ('.swiper-container', {
+    direction: 'vertical',
+    loop: false
+  })
+  </script>
+</body>
+</html>

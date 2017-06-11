@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  font: small arial,sans-serif;
+}
+
+ul, li, ol {
+  list-style: none;
+}
+
+canvas {
+  top: 1em;
+  position: absolute;
+}
+
+#content canvas {
+  top: 0em;
+}
+
+#wall {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0px 0px 20px 1px #666 inset;
+  position: absolute;
+}
+
+#bookcase {
+  padding: 0em 0 1.5em 0;
+  background-image: url('../images/bookcase.png');
+  background-size: 100% 100%;
+  box-shadow: 0px 0px 10px 1px #666;
+}
+
+#content {
+  position: absolute;
+  top: 0;
+  z-index: 20
+}
+
+.book {
+  float: left;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.bookshelf ul li:first-child {
+  margin-left: 0;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+.year {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+.bookshelf ul li:first-child {
+  margin-left: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.bookshelf {
+  background-image: url('../images/bookshelf.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+}
+
+.bookshelf:first-child {
+  margin-top: 0;
+}
+
+
+::-webkit-scrollbar {
+  width: 0em;
+}
+
+
+#pages {
+  background-image: url('../images/book_page.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.del {
+  background-image: url('../images/delete.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}

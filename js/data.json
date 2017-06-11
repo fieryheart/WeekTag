@@ -1,0 +1,52 @@
+[
+   {
+     "mCategory":"学习",
+     "mDate":"2017-06-08 ",
+     "mLastingTime":4.5
+   },
+   {
+     "mCategory":"睡觉",
+     "mDate":"2017-06-08 ",
+     "mLastingTime":8
+   },
+   {
+     "mCategory":"吃饭",
+     "mDate":"2017-06-08 ",
+     "mLastingTime":0.5
+   },
+   {
+     "mCategory":"娱乐",
+     "mDate":"2017-06-08 ",
+     "mLastingTime":2
+   },
+   {
+     "mCategory":"其他",
+     "mDate":"2017-06-08 ",
+     "mLastingTime":9
+   },
+   {
+     "mCategory":"学习",
+     "mDate":"2017-06-09 ",
+     "mLastingTime":10
+   },
+   {
+     "mCategory":"睡觉",
+     "mDate":"2017-06-09 ",
+     "mLastingTime":6
+   },
+   {
+     "mCategory":"吃饭",
+     "mDate":"2017-06-09 ",
+     "mLastingTime":1
+   },
+   {
+     "mCategory":"娱乐",
+     "mDate":"2017-06-09 ",
+     "mLastingTime":0
+   },
+   {
+     "mCategory":"其他",
+     "mDate":"2017-06-09 ",
+     "mLastingTime":7
+   }
+]
