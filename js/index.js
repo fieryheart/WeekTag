@@ -1,13 +1,61 @@
+// 测试数据
+var testData = [
+   {
+     "mCategory":"学习",
+     "mDate":"2017-06-08",
+     "mLastingTime":4.5
+   },
+   {
+     "mCategory":"睡觉",
+     "mDate":"2017-06-08",
+     "mLastingTime":8
+   },
+   {
+     "mCategory":"吃饭",
+     "mDate":"2017-06-08",
+     "mLastingTime":0.5
+   },
+   {
+     "mCategory":"娱乐",
+     "mDate":"2017-06-08",
+     "mLastingTime":2
+   },
+   {
+     "mCategory":"其他",
+     "mDate":"2017-06-08",
+     "mLastingTime":9
+   },
+   {
+     "mCategory":"学习",
+     "mDate":"2017-06-09",
+     "mLastingTime":10
+   },
+   {
+     "mCategory":"睡觉",
+     "mDate":"2017-06-09",
+     "mLastingTime":6
+   },
+   {
+     "mCategory":"吃饭",
+     "mDate":"2017-06-09",
+     "mLastingTime":1
+   },
+   {
+     "mCategory":"娱乐",
+     "mDate":"2017-06-09",
+     "mLastingTime":0
+   },
+   {
+     "mCategory":"其他",
+     "mDate":"2017-06-09",
+     "mLastingTime":7
+   }
+]
+
 // App类
 function App() {
   this.years = []
   this.obsY = []
-  var year = new Year()
-  var month = new Month()
-  var week = new Week()
-  month.weeks.push(week)
-  year.months.push(month)
-  this.years.push(year)
 }
 App.prototype.getBoxModel = function(model) {
   this.width = parseInt( $(model).css('width') )
@@ -28,23 +76,25 @@ App.prototype.getBoxModel = function(model) {
 var app = new App()
 
 // data构造函数
-function handleData(datas) {
+function handleData(app, datas) {
 
   var obsY = app.obsY
   var years = app.years
-
   datas.forEach(function(data) {
     var date = data.mDate.split('-')
-    var year = data[0]
-    var month = data[1]
-    var days = getDaysFromTheMonth( year, month )
-    var day = parseInt(data[2], 0)
-    var week = Math.round( day / Math.floor(month/4) ) === 5 ? 4 : Math.round( day / Math.floor(month/4) )
+    var category = data.mCategory
+    var lastingTime = data.mLastingTime
 
-    if( obsY.indexOf(year) === -1 ) { // 添加新的年份
+    var dYear = date[0]
+    var dMonth = date[1]
+    var dDays = getDaysFromTheMonth( dYear, dMonth )
+    var dDay = parseInt(date[2], 0)
+    var week = Math.round( dDay / Math.floor(dDays/4) ) === 5 ? 4 : Math.round( dDay / Math.floor(dDays/4) )
 
-      years.push(new Year(year))
-      obsY.push(year)
+    if( obsY.indexOf(dYear) === -1 ) { // 没有此年份，添加新的年份
+
+      years.push(new Year(dYear))
+      obsY.push(dYear)
 
       obsY.sort(function(x, y) {
         var xI = obsY.indexOf(x)
@@ -59,18 +109,27 @@ function handleData(datas) {
         return x > y
       })
 
-    }else {
-
-      var nYear = years.indexOf(year)
-      var iYear = years[nYear]
-      var months = iYear.months
-
-      if(iYear.indexOf(month) ) {}
-
     }
+
+    var iYear = obsY.indexOf(dYear)
+    var nYear = years[iYear]
+    var month = parseInt(dMonth)
+
+    var page = nYear.months[month-1].weeks[week-1]
+
+    if(page.obsT.indexOf(category) === -1) { // 如果没有此项事件
+      var tag = new Tag(category, lastingTime)
+      page.obsT.push(category)
+      page.tags.push(tag)
+    }else {
+      var i = page.obsT.indexOf(category)
+      page.tags[i].time += lastingTime
+    }
+
   })
 
 }
+handleData(app, testData)
 
 console.log(app)
 
@@ -84,16 +143,31 @@ function getDaysFromTheMonth(year, month){
 
 // 年的构造函数
 function Year(year) {
+
+  var ms = [1,2,3,4,5,6,7,8,9,10,11,12]
+  var months = []
+
+  ms.forEach(function(m) {
+    months.push(new Month(m))
+  })
+
   this.year = year
-  this.months = []
-  this.obsM = []
+  this.months = months
 }
 
 // 月的构造函数
 function Month(month) {
   this.month = month
-  this.weeks = []
-  this.obsM = []
+
+  var ws = [1,2,3,4]
+  var weeks = []
+
+
+  ws.forEach(function(w) {
+    weeks.push(new Week(w))
+  })
+
+  this.weeks = weeks
 }
 
 // 周的构造函数
@@ -101,6 +175,7 @@ function Week(week){
   this.week = week
   this.tags = []
   this.obsT = []
+
 }
 
 // 时间的构造函数
