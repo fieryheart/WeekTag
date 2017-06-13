@@ -185,8 +185,6 @@ function Tag(name, time) {
 }
 
 
-var years = ['2017', '2018']
-
 var bookshelfPaddingRadio = [2/15, 1/25, 3/10, 1/25] // top right bottom left
 
 
@@ -210,9 +208,7 @@ Bookcase.prototype = app
 var bookcase = new Bookcase()
 bookcase.getBoxModel('#bookcase')
 
-
-
-years.forEach(function(year, index) {
+app.obsY.forEach(function(year, index) {
 
   var slide = $('<div />', {
     class: 'swiper-slide'
@@ -305,8 +301,10 @@ function setBooks() {
     var books = $('<ul />')
     $(item).append(books)
 
-    while(num !== 4){
+    var year = app.obsY[Math.floor(index/12)]
 
+    while(num !== 4){
+      var month = (index*3 + num) % 12
       var b = $('<li />', {
         class: 'book',
         css: {
@@ -314,7 +312,8 @@ function setBooks() {
           height: book.height,
           marginLeft: num === 1 ? '0' : book.marginLeft + 'px',
           backgroundImage: 'url("./images/books/book_' + (bNum%12+1) + '.png")'
-        }
+        },
+        "data-date": year + '-' + month
       })
 
       b.on('touchstart', openBook)
