@@ -97,9 +97,10 @@ function monthData(target) {
 
   var year = date[0]
   var month = date[1]
+
   var iYear = app.obsY.indexOf(year)
   var data = app.years[iYear].months[month-1].weeks
-  console.log(data)
+
 
   var page = $('<li />', {
     'data-page': '1',
@@ -118,12 +119,15 @@ function monthData(target) {
   )
   $("#pages").append(pageCanvas.view)
 
+  // 判断当月是否有数据
   var haveData = 0
   data.forEach(function(item) {
     if(item.obsT.length){
       haveData = 1
     }
   })
+
+
   if(haveData) {
     var startX, moveEndX, X
     var index = 0
@@ -137,18 +141,23 @@ function monthData(target) {
       if( X < 0 && data[index+1] && data[index+1].obsT.length !== 0 ) { // 向右
         pageCanvas.stage.removeChildren()
         drawNRegularPolygon(origin, -Math.PI/2, 20, data[++index], pageCanvas)
+        showDate(pageCanvas, date, index)
       }else if( X > 0 && data[index-1] && data[index-1].obsT.length !== 0){ // 向左
         pageCanvas.stage.removeChildren()
         drawNRegularPolygon(origin, -Math.PI/2, 20, data[--index], pageCanvas)
+        showDate(pageCanvas, date, index)
       }else if( X < 0 && data[index+1] && data[index+1].obsT.length === 0 ) {
         pageCanvas.stage.removeChildren()
         noData(pageCanvas)
         ++index
+        showDate(pageCanvas, date, index)
       }else if( X > 0 && data[index-1] && data[index-1].obsT.length === 0 ) {
         pageCanvas.stage.removeChildren()
         noData(pageCanvas)
         --index
+        showDate(pageCanvas, date, index)
       }
+
     })
 
     var origin = {
@@ -157,26 +166,43 @@ function monthData(target) {
     }
 
     drawNRegularPolygon(origin, -Math.PI/2, 20, data[0], pageCanvas)
+    showDate(pageCanvas, date, 0)
   }else {
     noData(pageCanvas)
   }
 
 }
 
-function noData(pageCanvas){
-  var str = "无数据"
+function showDate(pageCanvas, date, index) {
 
+  var week = date[0] + '年' + date[1] + '月' + (index+1) + '周'
   var style = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 14,
     fontWeight: 'bold'
   })
-  var text = new PIXI.Text(str, style)
-  text.anchor.set(0.5)
-  text.x = pageCanvas.renderer.width / 2
-  text.y = pageCanvas.renderer.height / 2
 
-  pageCanvas.stage.addChild(text)
+  var weekText = new PIXI.Text(week, style)
+  weekText.anchor.set(0.5)
+  weekText.x = pageCanvas.renderer.width / 2
+  weekText.y = pageCanvas.renderer.height - style.fontSize
+  pageCanvas.stage.addChild(weekText)
+}
+
+function noData(pageCanvas){
+  var str = "无数据"
+  var style = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 14,
+    fontWeight: 'bold'
+  })
+  var strText = new PIXI.Text(str, style)
+  strText.anchor.set(0.5)
+  strText.x = pageCanvas.renderer.width / 2
+  strText.y = pageCanvas.renderer.height / 2
+  pageCanvas.stage.addChild(strText)
+
+
 }
 
 // 构建正n边形；origin->多边形原点位置；start->开始角度；l->原点到外点的长度；n->n边形
@@ -241,13 +267,16 @@ function drawNRegularPolygon(origin, start, l, data, app) {
 
   })
 
-  tags.forEach(function(event, i) {
+
+
+  tags.forEach(function(tag, i) {
+
     var style = new PIXI.TextStyle({
       fontFamily: 'Arial',
       fontSize: 14,
       fontWeight: 'bold'
     })
-    var text = new PIXI.Text(event.name, style)
+    var text = new PIXI.Text(tag.name, style)
     text.anchor.set(0.5)
     text.x = names[i].x
     text.y = names[i].y
@@ -255,9 +284,9 @@ function drawNRegularPolygon(origin, start, l, data, app) {
     app.stage.addChild(text)
     var lastPolygon = polygons[polygons.length-1]
     // 得到每个事件用时点的坐标
-    eCoordinates.push( getPointCoordinate(origin, lastPolygon[i], event) )
+    eCoordinates.push( getPointCoordinate(origin, lastPolygon[i], tag) )
 
-    showData(event, i, app)
+    showData(tags, i, app)
 
   })
 
@@ -288,15 +317,21 @@ function drawNRegularPolygon(origin, start, l, data, app) {
 }
 
 // 显示数据
-function showData(event, i, app) {
+function showData(tags, i, app) {
+  var tagsTimeSum = tags.map(function(tag){
+    return tag.time
+  }).reduce(function(x, y){
+    return x + y
+  }, 0)
+
   var style = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fill: ['0x000000']
   })
-  var text = new PIXI.Text(event.name + " : " + event.time + 'h', style)
-
-  text.x = app.renderer.width / 2 - 10
+  var text = new PIXI.Text(tags[i].name + " : " + tags[i].time + 'h' + ' ; ' + (tags[i].time/tagsTimeSum*100).toFixed(2) + '%', style)
+  text.x = app.renderer.width / 2 - text.width/2
   text.y = app.renderer.height / 2 + i*30
 
   app.stage.addChild(text)

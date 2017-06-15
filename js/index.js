@@ -304,7 +304,7 @@ function setBooks() {
     var year = app.obsY[Math.floor(index/12)]
 
     while(num !== 4){
-      var month = (index*3 + num) % 12
+      var month = (index*3 + num) % 12 === 0 ? 12 : (index*3 + num) % 12
       var b = $('<li />', {
         class: 'book',
         css: {
