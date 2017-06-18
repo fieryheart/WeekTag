@@ -184,7 +184,7 @@ function showDate(pageCanvas, date, index) {
 
   var weekText = new PIXI.Text(week, style)
   weekText.anchor.set(0.5)
-  weekText.x = pageCanvas.renderer.width / 2
+  weekText.x = pageCanvas.renderer.width * 3/5
   weekText.y = pageCanvas.renderer.height - style.fontSize
   pageCanvas.stage.addChild(weekText)
 }
@@ -198,7 +198,7 @@ function noData(pageCanvas){
   })
   var strText = new PIXI.Text(str, style)
   strText.anchor.set(0.5)
-  strText.x = pageCanvas.renderer.width / 2
+  strText.x = pageCanvas.renderer.width * 3/5
   strText.y = pageCanvas.renderer.height / 2
   pageCanvas.stage.addChild(strText)
 
@@ -331,7 +331,7 @@ function showData(tags, i, app) {
     fill: ['0x000000']
   })
   var text = new PIXI.Text(tags[i].name + " : " + tags[i].time + 'h' + ' ; ' + (tags[i].time/tagsTimeSum*100).toFixed(2) + '%', style)
-  text.x = app.renderer.width / 2 - text.width/2
+  text.x = app.renderer.width * 3/5 - text.width/2
   text.y = app.renderer.height / 2 + i*30
 
   app.stage.addChild(text)
