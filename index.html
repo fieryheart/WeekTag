@@ -16,11 +16,11 @@
         width: 100%;
         height: 100%;
         z-index: 999;
-        background-color: #000;
+        background-color: #fff;
       }
       #canvas{
             width:100%;
-            background-color: #000;
+            background-color: #fff;
       }
   </style>
   <script type="text/javascript" src="js/zepto.min.js"></script>
@@ -45,6 +45,7 @@
 
       <script type="text/javascript" src="js/books.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
+      <script type="text/javascript" src="js/animation.js"></script>
       <script>
             var mySwiper = new Swiper ('.swiper-container', {
               direction: 'vertical',
@@ -55,30 +56,87 @@
             $("#canvas").css("top", "50%");
             $("#canvas").css("margin-top", -parseInt($("#canvas").css("height"))/2)
 
+
+
             window.onload = function() {
+             
                 var canvas = document.getElementById("canvas"),
                         context = canvas.getContext("2d"),
                         cirX = canvas.width / 2,
                         cirY = canvas.height / 2,
-                        rad = Math.PI * 2 / 100,
-                        n = 1,
+                        rad = Math.PI * 2 / 360,
+                        width = 100,
+                        height = 150,
+                        n = 0,
                         speed = 150,
-                        r = 100;
-
-                function writeCircle() {
+                        r = 50,
+                        frame = 45;
+                      
+                function writeStep_01(n) {
                     context.save();
                     context.beginPath();
-                    context.strokeStyle = "#49f";
-                    context.arc(cirX, cirY, r, 0, Math.PI * 2,  false);
+                    context.strokeStyle = "#000";
+                    context.arc(cirX, cirY - r, r, -Math.PI / 2, -Math.PI/2 - rad*n,  true);
+                    // context.lineTo(cirX - width/2 , cirY + (height-r)/2);
+                    // context.lineTo(cirX + width/2, cirY + (height-r)/2);
+                    // context.lineTo(cirX + width/2, cirY - (height-r)/2);
+                    // context.arc(cirX, cirY - r, r, 0, -Math.PI/2 ,  true);
                     context.stroke();
                     context.restore();
                 }
 
+                // function writeStep_02(n) {
+                //   context.save();
+                //   context.beginPath();
+                //   context.strokeStyle = "#000";
+                //   context.moveTo(cirX - width/2, cirY - r);
+                //   context.lineTo(cirX - width/2, cirY + (n-r));
+                //   context.stroke();
+                //   context.restore();
+                // }
+
+
+                var myWrapAnimation;
+
+                function step_1() {
+                  context.clearRect(0, 0, canvas.width, canvas.height);
+
+                  writeStep_01(n);
+                  if(n < 90) {
+                      
+                      n += 90/frame;
+                      myWrapAnimation = requestAnimationFrame(step_1);
+                  } else {
+                      n = 0;
+                      cancelAnimationFrame(myWrapAnimation);
+                  }
+                }
+                
+                // function step_2() {
+                //   context.clearRect(0, 0, canvas.width, canvas.height);
+
+                //   writeStep_01(90);
+                //   writeStep_02(n);
+                //   if(n < 100) {
+                //       n += 100/frame;
+                //       myWrapAnimation = requestAnimationFrame(step_2);
+                //   } else {
+                //       n = 0;
+                //       cancelAnimationFrame(myWrapAnimation);
+                //   }
+                // }
+
+                step_1();              
+  
+                var yanimation = new YAnimation("canvas");
+                console.log(yanimation);
+                yanimation.lineFromTo(cirX - r, cirY - r, cirX - r, cirY + r, 1, 1000, "#000");
+
                 function writeText(n) {
                     context.save();
                     context.strokeStyle = "#49f";
-                    context.font = "40px Arial";
-                    context.strokeText(n.toFixed(0) + "%", cirX - 30, cirY + 10);
+                    context.font = "20px Arial";
+                    context.strokeText(n.toFixed(0) + "%", cirX - 18, cirY + 8);
                     context.stroke();
                     context.restore();
                 }
@@ -93,24 +151,26 @@
                     context.restore();
                 }
 
+
+
                 var myAniFrame;
 
-                function DreamLoading() {
-                    context.clearRect(0, 0, canvas.width, canvas.height);
+                // function DreamLoading() {
+                //     context.clearRect(0, 0, canvas.width, canvas.height);
 
-                    writeCircle();
-                    writeText(n);
-                    writeBlue(n)
-                    if( n < 100 ) {
-                        n = n + 0.1;
-                        myAniFrame = requestAnimationFrame(DreamLoading);
-                    } else {
-                        cancelAnimationFrame(myAniFrame);
-                        $("#loading-wrap").css("display", "none");
-                    }
-                }
+                //     writeCircle();
+                //     writeText(n);
+                //     writeBlue(n)
+                //     if( n < 100 ) {
+                //         n = n + 0.1;
+                //         myAniFrame = requestAnimationFrame(DreamLoading);
+                //     } else {
+                //         cancelAnimationFrame(myAniFrame);
+                //         $("#loading-wrap").css("display", "none");
+                //     }
+                // }
 
-                DreamLoading();
+                // DreamLoading();
             }
       </script>
 </body>
