@@ -4,11 +4,24 @@ function Coordinate(x, y) {
   this.y = y
 }
 
+
+function stdDate(date) {
+  var arr = data.split('-')
+
+}
+
 // 处理数据
 function stdData(data) {
 
 }
 
+
+function bookBindEvent(e) {
+
+  book.on('pointerdown', openBook)
+
+  animate = requestAnimationFrame(showBooksAnimate)
+}
 
 // 停止动画
 function stop() {
@@ -41,7 +54,6 @@ function openBookAnimate() {
 }
 
 function openBookAction(target) {
-
 
   var bg = $('<div />', {
     css: {
@@ -91,16 +103,76 @@ function openBookAction(target) {
 
 function monthData(target) {
 
-
-  var date = $(target).attr('data-date').split('-')
-  console.log(date)
-
-  var year = date[0]
-  var month = date[1]
-
-  var iYear = app.obsY.indexOf(year)
-  var data = app.years[iYear].months[month-1].weeks
-
+  var data = [
+    [{
+      name: '学习',
+      time: 20.4
+    },
+    {
+      name: '工作',
+      time: 20
+    },
+    {
+      name: '睡觉',
+      time: 50
+    },
+    {
+      name: '吃饭',
+      time: 10.1
+    },
+    {
+      name: '娱乐',
+      time: 5
+    },
+    {
+      name: '其他',
+      time: 15
+    }],
+    [{
+        name: '学习',
+        time: 20
+      },
+      {
+        name: '工作',
+        time: 30
+      },
+      {
+        name: '睡觉',
+        time: 40.4
+      },
+      {
+        name: '吃饭',
+        time: 5
+      },
+      {
+        name: '娱乐',
+        time: 15
+      },
+      {
+        name: '其他',
+        time: 15.7
+      }],
+      [{
+          name: '学习',
+          time: 5
+        },
+        {
+          name: '工作',
+          time: 10
+        },
+        {
+          name: '睡觉',
+          time: 60.9
+        },
+        {
+          name: '吃饭',
+          time: 15
+        },
+        {
+          name: '娱乐',
+          time: 30
+        }]
+  ]
 
   var page = $('<li />', {
     'data-page': '1',
@@ -119,89 +191,30 @@ function monthData(target) {
   )
   $("#pages").append(pageCanvas.view)
 
-  // 判断当月是否有数据
-  var haveData = 0
-  data.forEach(function(item) {
-    if(item.obsT.length){
-      haveData = 1
+  var startX, moveEndX, X
+  var index = 0
+  $('#pages').on('touchstart', function(e){
+    startX = e.touches[0].pageX
+  })
+  $('#pages').on('touchend', function(e) {
+    moveEndX = e.changedTouches[0].pageX
+    X = moveEndX - startX
+
+    if( X < 0 && data[index+1] ) { // 向右
+      pageCanvas.stage.removeChildren()
+      drawNRegularPolygon(origin, -Math.PI/2, 20, data[++index], pageCanvas)
+    }else if( X > 0 && data[index-1]){ // 向左
+      pageCanvas.stage.removeChildren()
+      drawNRegularPolygon(origin, -Math.PI/2, 20, data[--index], pageCanvas)
     }
   })
 
-
-  if(haveData) {
-    var startX, moveEndX, X
-    var index = 0
-    $('#pages').on('touchstart', function(e){
-      startX = e.touches[0].pageX
-    })
-    $('#pages').on('touchend', function(e) {
-      moveEndX = e.changedTouches[0].pageX
-      X = moveEndX - startX
-
-      if( X < 0 && data[index+1] && data[index+1].obsT.length !== 0 ) { // 向右
-        pageCanvas.stage.removeChildren()
-        drawNRegularPolygon(origin, -Math.PI/2, 20, data[++index], pageCanvas)
-        showDate(pageCanvas, date, index)
-      }else if( X > 0 && data[index-1] && data[index-1].obsT.length !== 0){ // 向左
-        pageCanvas.stage.removeChildren()
-        drawNRegularPolygon(origin, -Math.PI/2, 20, data[--index], pageCanvas)
-        showDate(pageCanvas, date, index)
-      }else if( X < 0 && data[index+1] && data[index+1].obsT.length === 0 ) {
-        pageCanvas.stage.removeChildren()
-        noData(pageCanvas)
-        ++index
-        showDate(pageCanvas, date, index)
-      }else if( X > 0 && data[index-1] && data[index-1].obsT.length === 0 ) {
-        pageCanvas.stage.removeChildren()
-        noData(pageCanvas)
-        --index
-        showDate(pageCanvas, date, index)
-      }
-
-    })
-
-    var origin = {
-      x: pageCanvas.renderer.width * 3/5,
-      y: pageCanvas.renderer.height / 4,
-    }
-
-    drawNRegularPolygon(origin, -Math.PI/2, 20, data[0], pageCanvas)
-    showDate(pageCanvas, date, 0)
-  }else {
-    noData(pageCanvas)
+  var origin = {
+    x: pageCanvas.renderer.width * 3/5,
+    y: pageCanvas.renderer.height / 4,
   }
 
-}
-
-function showDate(pageCanvas, date, index) {
-
-  var week = date[0] + '年' + date[1] + '月' + (index+1) + '周'
-  var style = new PIXI.TextStyle({
-    fontFamily: 'Arial',
-    fontSize: 14,
-    fontWeight: 'bold'
-  })
-
-  var weekText = new PIXI.Text(week, style)
-  weekText.anchor.set(0.5)
-  weekText.x = pageCanvas.renderer.width * 3/5
-  weekText.y = pageCanvas.renderer.height - style.fontSize
-  pageCanvas.stage.addChild(weekText)
-}
-
-function noData(pageCanvas){
-  var str = "无数据"
-  var style = new PIXI.TextStyle({
-    fontFamily: 'Arial',
-    fontSize: 14,
-    fontWeight: 'bold'
-  })
-  var strText = new PIXI.Text(str, style)
-  strText.anchor.set(0.5)
-  strText.x = pageCanvas.renderer.width * 3/5
-  strText.y = pageCanvas.renderer.height / 2
-  pageCanvas.stage.addChild(strText)
-
+  drawNRegularPolygon(origin, -Math.PI/2, 20, data[0], pageCanvas)
 
 }
 
@@ -222,10 +235,10 @@ function nRegularPolygon(origin, start, l, n) {
 
 // 绘制多边形
 function drawNRegularPolygon(origin, start, l, data, app) {
-  var tags = data.tags
+
   var polygons = []
   for(var i = 1; i < 6; i++) {
-    polygons.push(nRegularPolygon(origin, start, i*l, tags.length))
+    polygons.push(nRegularPolygon(origin, start, i*l, data.length))
   }
 
   // 每个事件名字的位置
@@ -267,16 +280,13 @@ function drawNRegularPolygon(origin, start, l, data, app) {
 
   })
 
-
-
-  tags.forEach(function(tag, i) {
-
+  data.forEach(function(event, i) {
     var style = new PIXI.TextStyle({
       fontFamily: 'Arial',
       fontSize: 14,
       fontWeight: 'bold'
     })
-    var text = new PIXI.Text(tag.name, style)
+    var text = new PIXI.Text(event.name, style)
     text.anchor.set(0.5)
     text.x = names[i].x
     text.y = names[i].y
@@ -284,9 +294,9 @@ function drawNRegularPolygon(origin, start, l, data, app) {
     app.stage.addChild(text)
     var lastPolygon = polygons[polygons.length-1]
     // 得到每个事件用时点的坐标
-    eCoordinates.push( getPointCoordinate(origin, lastPolygon[i], tag) )
+    eCoordinates.push( getPointCoordinate(origin, lastPolygon[i], event) )
 
-    showData(tags, i, app)
+    showData(event, i, app)
 
   })
 
@@ -317,21 +327,15 @@ function drawNRegularPolygon(origin, start, l, data, app) {
 }
 
 // 显示数据
-function showData(tags, i, app) {
-  var tagsTimeSum = tags.map(function(tag){
-    return tag.time
-  }).reduce(function(x, y){
-    return x + y
-  }, 0)
-
+function showData(event, i, app) {
   var style = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 16,
-    fontWeight: 'bold',
-    fill: ['0x000000']
+    fontWeight: 'bold'
   })
-  var text = new PIXI.Text(tags[i].name + " : " + tags[i].time + 'h' + ' ; ' + (tags[i].time/tagsTimeSum*100).toFixed(2) + '%', style)
-  text.x = app.renderer.width * 3/5 - text.width/2
+  var text = new PIXI.Text(event.name + " : " + event.time + 'h', style)
+
+  text.x = app.renderer.width / 2 - 10
   text.y = app.renderer.height / 2 + i*30
 
   app.stage.addChild(text)
